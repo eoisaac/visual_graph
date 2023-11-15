@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "@rocketseat/eslint-config/react",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "build"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "react-refresh"
+  ],
+  "globals": {
+    "JSX": true
+  },
+  "rules": {}
+}
