@@ -8,11 +8,15 @@ import {
 } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/use-toast'
 
-export function Toaster() {
+interface ToasterProps {
+  duration?: number
+}
+
+export function Toaster({ duration = 2000 }: ToasterProps) {
   const { toasts } = useToast()
 
   return (
-    <ToastProvider>
+    <ToastProvider duration={duration}>
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
           <Toast key={id} {...props}>

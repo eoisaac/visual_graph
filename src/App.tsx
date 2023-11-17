@@ -82,7 +82,6 @@ const INITIAL_EDGES = [
 
 export const App = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
-  console.log(edges)
 
   const onConnect = React.useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
