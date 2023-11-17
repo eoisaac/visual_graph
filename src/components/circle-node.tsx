@@ -2,7 +2,10 @@ import { Handle, NodeProps, Position } from 'reactflow'
 
 export const CircleNode = (props: NodeProps) => {
   return (
-    <div className="w-8 h-8 rounded-full bg-primary grid place-items-center">
+    <div
+      className="w-10 h-10 rounded-full bg-primary grid place-items-center
+    -m-2"
+    >
       <Handle
         id="top"
         type="source"

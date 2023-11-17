@@ -88,6 +88,7 @@ export const FileImportDialog = ({ onImport }: FileImportDialogProps) => {
 
       if (matrix) {
         onImport(matrix)
+        clearFiles()
         handleClose()
       }
     } catch (error) {
