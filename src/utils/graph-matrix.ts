@@ -1,3 +1,5 @@
+import { Matrix } from '@/@types/app'
+
 const readFileContent = async (file: File): Promise<string> => {
   await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulate delay
   return new Promise((resolve, reject) => {
@@ -16,7 +18,7 @@ const readFileContent = async (file: File): Promise<string> => {
 interface ValidationResult {
   isValid: boolean
   message: string
-  matrix?: number[][]
+  matrix: Matrix | null
 }
 
 export const getGraphMatrix = async (file: File): Promise<ValidationResult> => {
@@ -29,22 +31,14 @@ export const getGraphMatrix = async (file: File): Promise<ValidationResult> => {
     return formattedLine.map((value) => parseInt(value))
   })
 
-  console.log(matrix)
   const isValid = matrix.every(
     (row) =>
       row.length === matrix.length && row.every((value) => !isNaN(value)),
   )
 
-  if (!isValid) {
-    return {
-      isValid: false,
-      message: 'The matrix is invalid.',
-    }
-  }
-
   return {
-    isValid: true,
-    message: 'The matrix is valid.',
-    matrix,
+    isValid,
+    message: isValid ? 'The matrix is valid.' : 'Invalid matrix.',
+    matrix: isValid ? matrix : null,
   }
 }

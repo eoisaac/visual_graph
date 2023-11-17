@@ -1,3 +1,4 @@
+import { Matrix } from '@/@types/app'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -18,10 +19,19 @@ import { neutral } from 'tailwindcss/colors'
 import { LoadingIndicator } from './loading-indicator'
 import { useToast } from './ui/use-toast'
 
-export const FileImportDialog = () => {
+interface FileImportDialogProps {
+  onImport: (matrix: Matrix) => void
+}
+
+export const FileImportDialog = ({ onImport }: FileImportDialogProps) => {
+  const [isOpen, setIsOpen] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
   const [files, setFiles] = React.useState<ExtFile[]>([])
+
   const { toast } = useToast()
+
+  const handleOpenChange = (open: boolean) => setIsOpen(open)
+  const handleClose = () => setIsOpen(false)
 
   const updateFiles = (files: ExtFile[]) => {
     const isTxt = files.every((file) => file.type === 'text/plain')
@@ -76,7 +86,10 @@ export const FileImportDialog = () => {
         })
       }
 
-      console.log(matrix)
+      if (matrix) {
+        onImport(matrix)
+        handleClose()
+      }
     } catch (error) {
       toast({
         title: 'Something went wrong',
@@ -89,7 +102,7 @@ export const FileImportDialog = () => {
   }
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button>Import File</Button>
       </DialogTrigger>

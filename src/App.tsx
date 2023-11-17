@@ -1,49 +1,21 @@
+import { Matrix } from '@/@types/app'
 import { CircleNode } from '@/components/circle-node'
 import { FileImportDialog } from '@/components/file-import-dialog'
+import { Toaster } from '@/components/ui/toaster'
 import '@/styles/globals.css'
 import React from 'react'
 import ReactFlow, {
   Background,
-  Connection,
   ConnectionMode,
   Controls,
   Edge,
   Node,
-  addEdge,
-  useEdgesState,
+  useNodesState,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 import { neutral } from 'tailwindcss/colors'
-import { Toaster } from './components/ui/toaster'
 
 const NODE_TYPES = { circleNode: CircleNode }
-
-const INITIAL_NODES = [
-  {
-    id: '1',
-    type: 'circleNode',
-    data: { label: '1' },
-    position: { x: 250, y: 250 },
-  },
-  {
-    id: '2',
-    type: 'circleNode',
-    data: { label: '2' },
-    position: { x: 500, y: 150 },
-  },
-  {
-    id: '3',
-    type: 'circleNode',
-    data: { label: '3' },
-    position: { x: 150, y: 50 },
-  },
-  {
-    id: '4',
-    type: 'circleNode',
-    data: { label: '4' },
-    position: { x: 50, y: 400 },
-  },
-] as Node[]
 
 const INITIAL_EDGES = [
   {
@@ -75,34 +47,58 @@ const INITIAL_EDGES = [
     source: '4',
     target: '3',
     type: 'straight',
+    data: { label: '4 -> 3' },
     sourceHandle: 'top',
     targetHandle: 'bottom',
   },
 ] as Edge[]
 
-export const App = () => {
-  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+const generateNodesFromMatrix = (matrix: Matrix): Node[] => {
+  return matrix.map((_, index) => {
+    const x = index * 150 + 50
+    const y = index * 150 + 50
 
-  const onConnect = React.useCallback(
-    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
-  )
+    return {
+      id: (index + 1).toString(),
+      type: 'circleNode',
+      data: { label: (index + 1).toString() },
+      position: { x, y },
+    }
+  })
+}
+
+export const App = () => {
+  const [matrix, setMatrix] = React.useState<Matrix>([[]])
+  const [nodes, setNodes] = useNodesState([])
+  // const [edges, setEdges, onEdgesChange] = useEdgesState([])
+
+  const handleSetMatrix = (matrix: Matrix) => setMatrix(matrix)
+
+  React.useEffect(() => {
+    if (matrix.length === 0) return
+    const nodes = generateNodesFromMatrix(matrix)
+    setNodes(nodes)
+  }, [matrix, setNodes])
+
+  // const onConnect = React.useCallback(
+  //   (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+  //   [setEdges],
+  // )
 
   return (
     <main className="w-screen h-screen bg-background relative">
       <ReactFlow
         nodeTypes={NODE_TYPES}
-        nodes={INITIAL_NODES}
-        edges={INITIAL_EDGES}
-        onConnect={onConnect}
-        onEdgesChange={onEdgesChange}
+        nodes={nodes}
+        // onConnect={onConnect}
+        // onEdgesChange={onEdgesChange}
         connectionMode={ConnectionMode.Loose}
         defaultEdgeOptions={{
           type: 'straight',
         }}
       >
         <div className="absolute top-16 right-16 z-30">
-          <FileImportDialog />
+          <FileImportDialog onImport={handleSetMatrix} />
         </div>
 
         <Background color={neutral[500]} />
