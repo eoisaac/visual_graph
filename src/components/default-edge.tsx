@@ -26,7 +26,7 @@ export const DefaultEdge = (props: EdgeProps) => {
             pointerEvents: 'all',
           }}
           className="w-6 h-6 rounded-full bg-muted text-muted-foreground 
-        text-center"
+        text-center shadow-md"
         >
           {props.data.label}
         </span>

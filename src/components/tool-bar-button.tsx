@@ -23,7 +23,12 @@ export const ToolBarButton = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant={variant} onClick={onClick}>
+          <Button
+            className="w-12"
+            size="icon"
+            variant={variant}
+            onClick={onClick}
+          >
             {icon}
             <span className="sr-only">{label}</span>
           </Button>

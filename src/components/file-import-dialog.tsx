@@ -115,7 +115,7 @@ export const FileImportDialog = ({ onImport }: FileImportDialogProps) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Import File</DialogTitle>
-          <DialogDescription className="text-neutral-300 text-sm">
+          <DialogDescription className="text-muted-foreground text-sm">
             Import a .txt file containing a graph matrix
           </DialogDescription>
         </DialogHeader>
@@ -141,7 +141,7 @@ export const FileImportDialog = ({ onImport }: FileImportDialogProps) => {
           ))}
         </Dropzone>
 
-        <DialogFooter>
+        <DialogFooter className="flex flex-col-reverse md:flex-row gap-2">
           <DialogClose onClick={clearFiles} asChild>
             <Button variant="secondary">Cancel</Button>
           </DialogClose>
