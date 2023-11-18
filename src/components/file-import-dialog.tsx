@@ -13,13 +13,14 @@ import {
 } from '@/components/ui/dialog'
 import { getGraphMatrix } from '@/utils/graph-matrix'
 import { Dropzone, ExtFile } from '@dropzone-ui/react'
-import { FileText } from '@phosphor-icons/react'
+import { FileText, UploadSimple } from '@phosphor-icons/react'
 import React from 'react'
 import { neutral } from 'tailwindcss/colors'
 import { LoadingIndicator } from './loading-indicator'
+import { ToolBarButton } from './tool-bar-button'
 import { useToast } from './ui/use-toast'
 
-interface FileImportDialogProps {
+export interface FileImportDialogProps {
   onImport: (matrix: Matrix) => void
 }
 
@@ -105,7 +106,11 @@ export const FileImportDialog = ({ onImport }: FileImportDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button>Import File</Button>
+        <ToolBarButton
+          label="Import File"
+          variant="default"
+          icon={<UploadSimple />}
+        />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
