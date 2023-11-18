@@ -4,14 +4,13 @@ import { DefaultEdge } from '@/components/default-edge'
 import { FileImportDialog } from '@/components/file-import-dialog'
 import { Toaster } from '@/components/ui/toaster'
 import '@/styles/globals.css'
+import { generateGraph } from '@/utils/generate-graph'
 import React from 'react'
 import ReactFlow, {
   Background,
   Connection,
   ConnectionMode,
   Controls,
-  Edge,
-  Node,
   addEdge,
   useEdgesState,
   useNodesState,
@@ -22,46 +21,9 @@ import { neutral } from 'tailwindcss/colors'
 const NODE_TYPES = { circleNode: CircleNode }
 const EDGE_TYPES = { defaultEdge: DefaultEdge }
 
-interface Graph {
-  nodes: Node[]
-  edges: Edge[]
-}
-
-const generateGraph = (matrix: Matrix): Graph => {
-  const nodes = matrix.map((_, index) => {
-    const cIndex = index + 1
-    const RADIUS = 130
-    const xCoord = Math.cos((cIndex / matrix.length) * 2 * Math.PI) * RADIUS
-    const yCoord = Math.sin((cIndex / matrix.length) * 2 * Math.PI) * RADIUS
-
-    return {
-      id: `node-${cIndex}`,
-      type: 'circleNode',
-      position: { x: xCoord, y: yCoord },
-      data: { label: String(cIndex) },
-    }
-  })
-
-  const edges: Edge[] = []
-  matrix.forEach((row, rowIndex) => {
-    row.forEach((weight, colIndex) => {
-      if (weight !== 0 && colIndex > rowIndex) {
-        edges.push({
-          id: `edge-${rowIndex}-${colIndex}`,
-          source: `node-${rowIndex + 1}`,
-          target: `node-${colIndex + 1}`,
-          data: { label: String(weight) },
-        })
-      }
-    })
-  })
-
-  return { nodes, edges }
-}
-
 export const App = () => {
   const [matrix, setMatrix] = React.useState<Matrix | null>(null)
-  const [nodes, setNodes] = useNodesState([])
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
   const handleSetMatrix = (matrix: Matrix) => setMatrix(matrix)
@@ -87,12 +49,12 @@ export const App = () => {
         edges={edges}
         onConnect={onConnectEdge}
         onEdgesChange={onEdgesChange}
+        onNodesChange={onNodesChange}
         connectionMode={ConnectionMode.Loose}
-        defaultEdgeOptions={{
-          type: 'defaultEdge',
-        }}
+        defaultEdgeOptions={{ type: 'defaultEdge' }}
+        fitView
       >
-        <div className="absolute top-16 right-16 z-30">
+        <div className="absolute top-8 right-8 md:top-16 md:right-16 z-30">
           <FileImportDialog onImport={handleSetMatrix} />
         </div>
 
