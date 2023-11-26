@@ -36,6 +36,7 @@ export const getGraphMatrix = async (file: File): Promise<ValidationResult> => {
       row.length === matrix.length && row.every((value) => !isNaN(value)),
   )
 
+  console.log('Matrix:', matrix)
   return {
     isValid,
     message: isValid ? 'The matrix is valid.' : 'Invalid matrix.',
