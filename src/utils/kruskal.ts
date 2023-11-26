@@ -36,17 +36,13 @@ const union = (
 
 export const kruskal = (adjacencyMatrix: Matrix): Matrix => {
   const numVertices = adjacencyMatrix.length
-  const edges: Matrix = []
-
-  for (let i = 0; i < numVertices; i++) {
-    for (let j = i + 1; j < numVertices; j++) {
-      if (adjacencyMatrix[i][j] !== 0) {
-        edges.push([i, j, adjacencyMatrix[i][j]])
-      }
-    }
-  }
-
-  edges.sort((a, b) => a[2] - b[2])
+  const edges: Matrix = adjacencyMatrix
+    .flatMap((row, i) =>
+      row
+        .slice(i + 1)
+        .map((weight, j) => (weight !== 0 ? [i, i + 1 + j, weight] : [])),
+    )
+    .sort((a, b) => a[2] - b[2])
 
   const result: Matrix = []
   const parent: number[] = Array.from({ length: numVertices }, (_, i) => i)
@@ -54,9 +50,7 @@ export const kruskal = (adjacencyMatrix: Matrix): Matrix => {
 
   let selectedEdges = 0
 
-  for (let i = 0; i < edges.length && selectedEdges < numVertices - 1; i++) {
-    const [u, v, weight] = edges[i]
-
+  edges.every(([u, v, weight]) => {
     const rootU = find(parent, u)
     const rootV = find(parent, v)
 
@@ -65,9 +59,14 @@ export const kruskal = (adjacencyMatrix: Matrix): Matrix => {
       selectedEdges++
       union(parent, rank, rootU, rootV)
     }
-  }
 
-  const resultMatrix: Matrix = createGraph(numVertices)
-  result.forEach(([u, v, weight]) => addEdge(resultMatrix, u, v, weight))
+    return selectedEdges < numVertices - 1
+  })
+
+  const resultMatrix: Matrix = result.reduce((graph, [u, v, weight]) => {
+    addEdge(graph, u, v, weight)
+    return graph
+  }, createGraph(numVertices))
+
   return resultMatrix
 }

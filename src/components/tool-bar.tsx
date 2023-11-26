@@ -5,6 +5,7 @@ import {
 import { useTheme } from '@/hooks/use-theme'
 import {
   CrosshairSimple,
+  Graph,
   MagnifyingGlassMinus,
   MagnifyingGlassPlus,
   Moon,
@@ -13,7 +14,11 @@ import {
 import { useReactFlow } from 'reactflow'
 import { ToolBarButton } from './tool-bar-button'
 
-export const ToolBar = ({ onImport }: FileImportDialogProps) => {
+interface ToolBarProps extends FileImportDialogProps {
+  onKruskal: () => void
+}
+
+export const ToolBar = ({ onImport, onKruskal }: ToolBarProps) => {
   const { zoomIn, zoomOut, setCenter } = useReactFlow()
   const { isDark, toggleTheme } = useTheme()
 
@@ -52,6 +57,7 @@ export const ToolBar = ({ onImport }: FileImportDialogProps) => {
         icon={isDark ? <Sun /> : <Moon />}
         onClick={handleToggleTheme}
       />
+      <ToolBarButton label="Kruskal" icon={<Graph />} onClick={onKruskal} />
     </div>
   )
 }

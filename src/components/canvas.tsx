@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { useFlowStore } from '@/stores/flow-store'
 import '@/styles/globals.css'
 import { generateGraph } from '@/utils/generate-graph'
+import { kruskal } from '@/utils/kruskal'
 import { IconContext } from '@phosphor-icons/react'
 import React from 'react'
 import ReactFlow, {
@@ -25,6 +26,7 @@ const NODE_TYPES = { circleNode: CircleNode }
 const EDGE_TYPES = { defaultEdge: DefaultEdge }
 
 export const Canvas = () => {
+  const [fileMatrix, setFileMatrix] = React.useState<Matrix | null>(null)
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
@@ -55,6 +57,19 @@ export const Canvas = () => {
     const graph = generateGraph(matrix)
     setNodes(graph.nodes)
     setEdges(graph.edges)
+
+    setFileMatrix(matrix)
+  }
+
+  const handleSetKruskalSpanningTree = () => {
+    if (!fileMatrix) return
+
+    const tree = kruskal(fileMatrix)
+    console.log(tree)
+    const graph = generateGraph(tree, true)
+    console.log(graph)
+    setNodes([...nodes, ...graph.nodes])
+    setEdges([...edges, ...graph.edges])
   }
 
   const onConnectEdge = React.useCallback(
@@ -78,7 +93,10 @@ export const Canvas = () => {
           onInit={setRfInstance}
           fitView
         >
-          <ToolBar onImport={handleSetNodesAndEdges} />
+          <ToolBar
+            onImport={handleSetNodesAndEdges}
+            onKruskal={handleSetKruskalSpanningTree}
+          />
           <Background color={neutral[500]} />
         </ReactFlow>
         <Toaster />
