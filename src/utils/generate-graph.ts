@@ -8,7 +8,7 @@ export interface Graph {
 
 export const generateGraph = (
   matrix: Matrix,
-  kruskal: boolean = false,
+  isKruskal: boolean = false,
 ): Graph => {
   const totalNodes = matrix.length
 
@@ -19,10 +19,10 @@ export const generateGraph = (
     const yCoord = Math.sin((cIndex / matrix.length) * 2 * Math.PI) * RADIUS
 
     return {
-      id: kruskal ? `kruskal-node-${cIndex}` : `node-${cIndex}`,
+      id: `node-${cIndex}`,
       type: 'circleNode',
       position: { x: xCoord, y: yCoord },
-      data: { label: String(cIndex), kruskal },
+      data: { label: String(cIndex), isKruskal },
     }
   })
 
@@ -32,16 +32,10 @@ export const generateGraph = (
       const isValidEdge = weight !== 0 && colIndex > rowIndex // Prevent self-loops and duplicate edges
       if (isValidEdge) {
         edges.push({
-          id: kruskal
-            ? `kruskal-edge-${rowIndex}-${colIndex}`
-            : `edge-${rowIndex}-${colIndex}`,
-          source: kruskal
-            ? `kruskal-node-${rowIndex + 1}`
-            : `node-${rowIndex + 1}`,
-          target: kruskal
-            ? `kruskal-node-${colIndex + 1}`
-            : `node-${colIndex + 1}`,
-          data: { label: String(weight) },
+          id: `edge-${rowIndex}-${colIndex}`,
+          source: `node-${rowIndex + 1}`,
+          target: `node-${colIndex + 1}`,
+          data: { label: String(weight), isKruskal },
         })
       }
     })

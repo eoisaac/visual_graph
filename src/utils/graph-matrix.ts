@@ -1,7 +1,7 @@
 import { Matrix } from '@/@types/app'
 
 const readFileContent = async (file: File): Promise<string> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulate delay
+  await new Promise((resolve) => setTimeout(resolve, 600)) // Simulate delay
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
 
@@ -36,7 +36,6 @@ export const getGraphMatrix = async (file: File): Promise<ValidationResult> => {
       row.length === matrix.length && row.every((value) => !isNaN(value)),
   )
 
-  console.log('Matrix:', matrix)
   return {
     isValid,
     message: isValid ? 'The matrix is valid.' : 'Invalid matrix.',

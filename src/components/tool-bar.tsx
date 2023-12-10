@@ -57,7 +57,11 @@ export const ToolBar = ({ onImport, onKruskal }: ToolBarProps) => {
         icon={isDark ? <Sun /> : <Moon />}
         onClick={handleToggleTheme}
       />
-      <ToolBarButton label="Kruskal" icon={<Graph />} onClick={onKruskal} />
+      <ToolBarButton
+        label="Minimum spanning tree"
+        icon={<Graph />}
+        onClick={onKruskal}
+      />
     </div>
   )
 }

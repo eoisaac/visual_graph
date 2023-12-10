@@ -6,7 +6,7 @@ export const CircleNode = (props: NodeProps) => {
     <div
       className={cn(
         'w-10 h-10 rounded-full bg-primary grid place-items-center -m-2 shadow-md',
-        { 'bg-emerald-500': props.data.kruskal },
+        { 'bg-emerald-500': props.data.isKruskal },
       )}
     >
       <Handle

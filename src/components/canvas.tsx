@@ -57,7 +57,6 @@ export const Canvas = () => {
     const graph = generateGraph(matrix)
     setNodes(graph.nodes)
     setEdges(graph.edges)
-
     setFileMatrix(matrix)
   }
 
@@ -65,11 +64,20 @@ export const Canvas = () => {
     if (!fileMatrix) return
 
     const tree = kruskal(fileMatrix)
-    console.log(tree)
     const graph = generateGraph(tree, true)
-    console.log(graph)
-    setNodes([...nodes, ...graph.nodes])
-    setEdges([...edges, ...graph.edges])
+
+    const updatedNodes = nodes.map((node) =>
+      graph.nodes.find((n) => n.id === node.id)
+        ? { ...node, data: { ...node.data, isKruskal: true } }
+        : node,
+    )
+    const updatedEdges = edges.map((edge) =>
+      graph.edges.find((e) => e.id === edge.id)
+        ? { ...edge, data: { ...edge.data, isKruskal: true } }
+        : edge,
+    )
+    setNodes(updatedNodes)
+    setEdges(updatedEdges)
   }
 
   const onConnectEdge = React.useCallback(
