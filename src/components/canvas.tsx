@@ -3,7 +3,7 @@ import { CircleNode } from '@/components/circle-node'
 import { DefaultEdge } from '@/components/default-edge'
 import { ToolBar } from '@/components/tool-bar'
 import { Toaster } from '@/components/ui/toaster'
-import { useFlowStore } from '@/stores/flow-store'
+import { useGraphStore } from '@/stores/graph-store'
 import '@/styles/globals.css'
 import { generateGraph } from '@/utils/generate-graph'
 import { kruskal } from '@/utils/kruskal'
@@ -26,7 +26,6 @@ const NODE_TYPES = { circleNode: CircleNode }
 const EDGE_TYPES = { defaultEdge: DefaultEdge }
 
 export const Canvas = () => {
-  const [fileMatrix, setFileMatrix] = React.useState<Matrix | null>(null)
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
@@ -34,7 +33,7 @@ export const Canvas = () => {
     null,
   )
   const { setViewport } = useReactFlow()
-  const { flow, setFlow } = useFlowStore()
+  const { matrix, flow, setFlow, setMatrix, setSpanningTree } = useGraphStore()
 
   React.useEffect(() => {
     if (flow) {
@@ -57,13 +56,13 @@ export const Canvas = () => {
     const graph = generateGraph(matrix)
     setNodes(graph.nodes)
     setEdges(graph.edges)
-    setFileMatrix(matrix)
+    setMatrix(matrix)
   }
 
   const handleSetKruskalSpanningTree = () => {
-    if (!fileMatrix) return
+    if (!matrix) return
 
-    const tree = kruskal(fileMatrix)
+    const { tree, totalWeight } = kruskal(matrix)
     const graph = generateGraph(tree, true)
 
     const updatedNodes = nodes.map((node) =>
@@ -76,8 +75,25 @@ export const Canvas = () => {
         ? { ...edge, data: { ...edge.data, isKruskal: true } }
         : edge,
     )
+
     setNodes(updatedNodes)
     setEdges(updatedEdges)
+    setSpanningTree({ hasSpanningTree: true, totalWeight })
+  }
+
+  const handleResetKruskal = () => {
+    const updatedNodes = nodes.map((node) => ({
+      ...node,
+      data: { ...node.data, isKruskal: false },
+    }))
+    const updatedEdges = edges.map((edge) => ({
+      ...edge,
+      data: { ...edge.data, isKruskal: false },
+    }))
+
+    setNodes(updatedNodes)
+    setEdges(updatedEdges)
+    setSpanningTree({ hasSpanningTree: false, totalWeight: 0 })
   }
 
   const onConnectEdge = React.useCallback(
@@ -104,6 +120,7 @@ export const Canvas = () => {
           <ToolBar
             onImport={handleSetNodesAndEdges}
             onKruskal={handleSetKruskalSpanningTree}
+            onReset={handleResetKruskal}
           />
           <Background color={neutral[500]} />
         </ReactFlow>

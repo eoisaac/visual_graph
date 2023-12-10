@@ -34,7 +34,12 @@ const union = (
   }
 }
 
-export const kruskal = (adjacencyMatrix: Matrix): Matrix => {
+interface KruskalResult {
+  tree: Matrix
+  totalWeight: number
+}
+
+export const kruskal = (adjacencyMatrix: Matrix): KruskalResult => {
   const numVertices = adjacencyMatrix.length
   const edges: Matrix = adjacencyMatrix
     .flatMap((row, i) =>
@@ -68,5 +73,8 @@ export const kruskal = (adjacencyMatrix: Matrix): Matrix => {
     return graph
   }, createGraph(numVertices))
 
-  return resultMatrix
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const totalWeight = result.reduce((acc, [_, __, weight]) => acc + weight, 0)
+
+  return { tree: resultMatrix, totalWeight }
 }
